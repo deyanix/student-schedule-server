@@ -1,0 +1,16 @@
+# Read the documentation: https://symfony.com/doc/master/bundles/FOSRestBundle/index.html
+fos_rest:
+  serializer:
+    serialize_null: true
+  view:
+    view_response_listener: true
+    failed_validation: 422
+    empty_content: 204
+  format_listener:
+    rules:
+      - { path: ^/, prefer_extension: true, fallback_format: json, priorities: [ json ] }
+  body_listener:
+    enabled: true
+    throw_exception_on_unsupported_content_type:  true
+    decoders:
+      json: fos_rest.decoder.json

@@ -1,0 +1,60 @@
+version: '3'
+
+services:
+  #PHP Service
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: student-schedule
+    restart: unless-stopped
+    tty: true
+    environment:
+      SERVICE_TAGS: dev
+      SERVICE_NAME: app
+    working_dir: /var/www
+    ports:
+      - "9000:9000"
+    volumes:
+      - ./docker/php/local.ini:/usr/local/etc/php/conf.d/local.ini
+    networks:
+      - schedule_network
+
+  #Nginx Service
+  webserver:
+    image: nginx:alpine
+    restart: unless-stopped
+    tty: true
+    ports:
+      - "80:80"
+    volumes:
+      - ./:/var/www
+      - ./docker/nginx/:/etc/nginx/conf.d/
+    networks:
+      - schedule_network
+
+  #MySQL Service
+  database:
+    image: mysql:8.0
+    restart: unless-stopped
+    tty: true
+    environment:
+      MYSQL_DATABASE: app_student_schedule
+      MYSQL_ROOT_PASSWORD: P@ssw0rd
+      SERVICE_TAGS: dev
+      SERVICE_NAME: mysql
+    volumes:
+      - dbdata:/var/lib/mysql/
+      - ./docker/mysql/my.cnf:/etc/mysql/my.cnf
+    networks:
+      - schedule_network
+
+#Docker Networks
+networks:
+  schedule_network:
+    driver: bridge
+
+#Volumes
+volumes:
+  dbdata:
+    driver: local
