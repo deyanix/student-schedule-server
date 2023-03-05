@@ -4,11 +4,23 @@ namespace App\Entity;
 
 use Carbon\Carbon;
 use DateTime;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\ORM\Mapping as ORM;
 
+#[ORM\Entity]
 abstract class OccurrenceRule {
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer', options: ['unsigned' => true])]
+    private int $id;
+    #[ORM\Column(type: 'time')]
 	private DateTime $startTime;
+    #[ORM\Column(type: 'time')]
 	private DateTime $endTime;
+    #[ORM\Column(type: 'string', nullable: true)]
 	private ?string $title;
+    #[ORM\ManyToOne(targetEntity: OccurrenceRuleSet::class, inversedBy: 'rules')]
+    private OccurrenceRuleSet $ruleSet;
 
 	public function __construct(DateTime $startTime, DateTime $endTime, ?string $title = null) {
 		$this->startTime = $startTime;
