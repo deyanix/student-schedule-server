@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Entity;
+namespace App\Entity\Schedule;
 
+use App\Entity\Course\CourseClassType;
 use DateTime;
 
 class ScheduleOccurrence {
@@ -10,6 +11,4 @@ class ScheduleOccurrence {
     private ?string $title;
     private DateTime $start;
     private DateTime $end;
-
-
 }

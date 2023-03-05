@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Entity;
+namespace App\Entity\Calendar;
 
-enum SemesterDayType {
+enum CalendarDayType {
 	case ODD;
 	case EVEN;
 	case ODD_EVEN;
 
-	public function opposite(): SemesterDayType {
+	public function opposite(): CalendarDayType {
 		return match ($this) {
 			self::ODD => self::EVEN,
 			self::EVEN => self::ODD,

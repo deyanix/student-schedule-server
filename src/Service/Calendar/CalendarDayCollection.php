@@ -1,13 +1,14 @@
 <?php
 
-namespace App\Entity;
+namespace App\Service\Calendar;
 
+use App\Entity\Calendar\CalendarDay;
 use Carbon\Carbon;
 use DateTime;
 
-class SemesterDayCollection {
+class CalendarDayCollection {
 
-	/** @var SemesterDay[] */
+	/** @var array<int, CalendarDay> */
 	private array $days;
 
 	public function __construct(array $days = []) {
@@ -44,18 +45,18 @@ class SemesterDayCollection {
 		return null;
 	}
 
-	public function get(DateTime $date): SemesterDay | null {
+	public function get(DateTime $date): CalendarDay | null {
 		$index = $this->indexOf($date);
 		return $index !== null ? $this->days[$index] : null;
 	}
 
-	public function create(DateTime $date): SemesterDay {
-		$day = new SemesterDay($date);
+	public function create(DateTime $date): CalendarDay {
+		$day = new CalendarDay($date);
 		$this->days[] = $day;
 		return $day;
 	}
 
-	public function getOrCreate(DateTime $date): SemesterDay {
+	public function getOrCreate(DateTime $date): CalendarDay {
 		return $this->get($date) ?: $this->create($date);
 	}
 
@@ -81,6 +82,10 @@ class SemesterDayCollection {
 	}
 
 	public function clone(): self {
-		return new SemesterDayCollection(array_values($this->days));
+		return new CalendarDayCollection(array_values($this->days));
+	}
+
+	public function toArray(): array {
+		return array_values($this->days);
 	}
 }

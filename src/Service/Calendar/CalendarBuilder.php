@@ -1,20 +1,22 @@
 <?php
 
-namespace App\Entity;
+namespace App\Service\Calendar;
 
+use App\Entity\Calendar\CalendarDayType;
+use App\Entity\Calendar\CalendarWeekDay;
 use Carbon\Carbon;
 use Carbon\CarbonInterface;
 use Carbon\CarbonPeriod;
 use DateTime;
 
-class SemesterCalendarBuilder {
-	private SemesterDayCollection $collection;
+class CalendarBuilder {
+	private CalendarDayCollection $collection;
 
 	public function __construct() {
-		$this->collection = new SemesterDayCollection();
+		$this->collection = new CalendarDayCollection();
 	}
 
-	public function initialize(DateTime $from, DateTime $to, SemesterDayType $startType = SemesterDayType::EVEN): self {
+	public function initialize(DateTime $from, DateTime $to, CalendarDayType $startType = CalendarDayType::EVEN): self {
 		$start = new Carbon($from);
 		if (!$start->isMonday()) {
 			$start = $start->previous(CarbonInterface::MONDAY);
@@ -49,33 +51,33 @@ class SemesterCalendarBuilder {
 		return $this->removeEach($array);
 	}
 
-	public function setRearrangement(DateTime $date, int $weekday): self {
-		$this->collection->get($date)?->setRearrangedWeekday($weekday);
+	public function setRearrangement(DateTime $date, CalendarWeekDay $weekday): self {
+		$this->collection->get($date)?->setRearrangedWeekDay($weekday);
 		return $this;
 	}
 
-	public function setType(DateTime $date, SemesterDayType $type): self {
+	public function setType(DateTime $date, CalendarDayType $type): self {
 		$this->collection->get($date)?->setType($type);
 		return $this;
 	}
 
-	public function setTypeEach(array $dates, SemesterDayType $type): self {
+	public function setTypeEach(array $dates, CalendarDayType $type): self {
 		foreach ($dates as $date) {
 			$this->setType($date, $type);
 		}
 		return $this;
 	}
 
-	public function setTypeBetween(DateTime $from, DateTime $to, SemesterDayType $type): self {
+	public function setTypeBetween(DateTime $from, DateTime $to, CalendarDayType $type): self {
 		$iterator = CarbonPeriod::between($from, $to)
 			->map(fn ($d) => $d->toDate());
 		$array = iterator_to_array($iterator);
 		return $this->setTypeEach($array, $type);
 	}
 
-	public function build(): SemesterCalendar {
+	public function build(): Calendar {
 		$collection = $this->collection->clone();
 		$collection->sort();
-		return new SemesterCalendar($collection);
+		return new Calendar($collection);
 	}
 }

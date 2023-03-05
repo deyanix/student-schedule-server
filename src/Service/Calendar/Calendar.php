@@ -1,18 +1,18 @@
 <?php
 
-namespace App\Entity;
+namespace App\Service\Calendar;
 
+use App\Entity\Calendar\CalendarDayType;
 use Carbon\Carbon;
-use Carbon\CarbonInterface;
 use Carbon\CarbonPeriod;
 use DateTime;
 
-class SemesterCalendar {
-	public SemesterDayCollection $collection;
+class Calendar {
+	public CalendarDayCollection $collection;
 	public DateTime $start;
 	public DateTime $end;
 
-	public function __construct(SemesterDayCollection $collection) {
+	public function __construct(CalendarDayCollection $collection) {
 		$this->collection = $collection;
 		$this->start = $collection->min();
 		$this->end = $collection->max();
@@ -26,14 +26,14 @@ class SemesterCalendar {
 		return $this->end;
 	}
 
-	public function match(DateTime $date, ?int $weekday = null, ?SemesterDayType $type = null): bool {
+	public function match(DateTime $date, ?int $weekday = null, ?CalendarDayType $type = null): bool {
 		$day = $this->collection->get($date);
 		return $day !== null &&
-			($weekday === null || $day->getWeekday() === $weekday) &&
+			($weekday === null || $day->getWeekDay() === $weekday) &&
 			($type === null || $day->matchType($type));
 	}
 
-	public function next(DateTime $date, ?int $weekday = null, ?SemesterDayType $type = null): ?DateTime {
+	public function next(DateTime $date, ?int $weekday = null, ?CalendarDayType $type = null): ?DateTime {
 		$start = (new Carbon($this->start))->subDay()->max($date);
 		return CarbonPeriod::create($start, $this->end, CarbonPeriod::EXCLUDE_START_DATE)
 			->addFilter(fn ($carbonDate) => $this->match($carbonDate->toDate(), $weekday, $type))
@@ -41,14 +41,14 @@ class SemesterCalendar {
 			?->toDate();
 	}
 
-	public function findAll(?int $weekday = null, ?SemesterDayType $type = null): array {
+	public function findAll(?int $weekday = null, ?CalendarDayType $type = null): array {
 		$iterator = CarbonPeriod::create($this->start, $this->end)
 			->addFilter(fn ($carbonDate) => $this->match($carbonDate->toDate(), $weekday, $type))
 			->map(fn ($carbonDate) => $carbonDate->toDate());
 		return iterator_to_array($iterator);
 	}
 
-	public function toCollection(): SemesterDayCollection {
+	public function toCollection(): CalendarDayCollection {
 		return $this->collection->clone();
 	}
 }

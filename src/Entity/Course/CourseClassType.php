@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Entity;
+namespace App\Entity\Course;
 
 enum CourseClassType {
 	case LECTURE;
