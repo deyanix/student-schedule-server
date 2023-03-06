@@ -4,18 +4,23 @@ namespace App\Entity\Occurrence;
 
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation as Serializer;
 
 #[ORM\Entity]
 class SelectedOccurrenceItem {
 	#[ORM\Id]
 	#[ORM\GeneratedValue]
 	#[ORM\Column(type: 'integer', options: ['unsigned' => true])]
+	#[Serializer\Groups(["occurrence_rule:all"])]
 	private int $id;
 	#[ORM\Column(type: 'date')]
+	#[Serializer\Groups(["occurrence_rule:all"])]
 	private DateTime $date;
-	#[ORM\Column(type: 'string')]
+	#[ORM\Column(type: 'string', nullable: true)]
+	#[Serializer\Groups(["occurrence_rule:all"])]
 	private ?string $title;
 	#[ORM\ManyToOne(targetEntity: SelectedOccurrenceRule::class, inversedBy: 'items')]
+	#[Serializer\Groups(["occurrence_rule:all"])]
 	private SelectedOccurrenceRule $rule;
 
 	/**

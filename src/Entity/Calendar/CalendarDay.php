@@ -39,8 +39,8 @@ class CalendarDay {
 		return $this->rearrangedWeekDay;
 	}
 
-	public function getWeekDay(): int {
-		return $this->getRearrangedWeekDay()->value ?: (new Carbon($this->date))->dayOfWeek;
+	public function getWeekDay(): ?int {
+		return $this->getRearrangedWeekDay()?->value ?: (new Carbon($this->date))->dayOfWeek;
 	}
 
 	public function setRearrangedWeekDay(?CalendarWeekDay $rearrangedWeekDay): void {

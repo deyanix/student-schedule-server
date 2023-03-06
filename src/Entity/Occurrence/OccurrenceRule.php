@@ -5,20 +5,26 @@ namespace App\Entity\Occurrence;
 use App\Entity\Course\CourseClass;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation as Serializer;
 
 #[ORM\MappedSuperclass]
 class OccurrenceRule {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer', options: ['unsigned' => true])]
+    #[Serializer\Groups(["occurrence_rule:all"])]
     private int $id;
     #[ORM\Column(type: 'time')]
+    #[Serializer\Groups(["occurrence_rule:all"])]
 	private DateTime $startTime;
     #[ORM\Column(type: 'time')]
+    #[Serializer\Groups(["occurrence_rule:all"])]
 	private DateTime $endTime;
     #[ORM\Column(type: 'string', nullable: true)]
+    #[Serializer\Groups(["occurrence_rule:all"])]
 	private ?string $title;
     #[ORM\ManyToOne(targetEntity: CourseClass::class, inversedBy: 'rules')]
+    #[Serializer\Groups(["occurrence_rule:all"])]
     private CourseClass $class;
 
 	/**

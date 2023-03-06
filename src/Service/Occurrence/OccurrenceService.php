@@ -29,7 +29,7 @@ class OccurrenceService {
 
 	public function getSelectedDayOccurrence(SelectedOccurrenceRule $rule, DateTime $date): ?Occurrence {
 		$date = new Carbon($date);
-		$item = $rule->getItems()->findFirst(fn ($item) => $date->isSameDay($item->getDate()));
+		$item = $rule->getItems()->findFirst(fn ($key, $item) => $date->isSameDay($item->getDate()));
 		if ($item == null) {
 			return null;
 		}
@@ -72,15 +72,20 @@ class OccurrenceService {
 	public function getRulesOccurrences(array $rules): array {
 		$result = [];
 		foreach ($rules as $rule) {
-			array_push($result, ...$rule->getOccurrences());
+			array_push($result, ...$this->getOccurrences($rule));
 		}
 		return $result;
 	}
 
+	/**
+	 * @param DateTime $date
+	 * @param array<mixed, OccurrenceRule> $rules
+	 * @return array<int, Occurrence>
+	 */
 	public function getRulesDayOccurrences(DateTime $date, array $rules): array {
 		$result = [];
 		foreach ($rules as $rule) {
-			$occurrence = $rule->getOccurrence($date);
+			$occurrence = $this->getDayOccurrence($rule, $date);
 			if ($occurrence !== null) {
 				$result[] = $occurrence;
 			}

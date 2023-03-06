@@ -2,20 +2,25 @@
 
 namespace App\Entity\Course;
 
+use App\Repository\CourseRepository;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation as Serializer;
 
-#[ORM\Entity]
+#[ORM\Entity(repositoryClass: CourseRepository::class)]
 class Course {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer', options: ['unsigned' => true])]
+    #[Serializer\Groups(["course:all"])]
     private int $id;
 
     #[ORM\Column(type: 'string')]
+    #[Serializer\Groups(["course:all"])]
     private string $name;
 
     #[ORM\OneToMany(targetEntity: CourseClass::class, mappedBy: 'course')]
+    #[Serializer\Groups(["course:all"])]
 	private Collection $classes;
 
 	/**

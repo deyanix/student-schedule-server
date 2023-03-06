@@ -2,10 +2,10 @@
 
 namespace App\Entity\Calendar;
 
-enum CalendarDayType {
-	case ODD;
-	case EVEN;
-	case ODD_EVEN;
+enum CalendarDayType: string {
+	case ODD = 'odd';
+	case EVEN = 'even';
+	case ODD_EVEN = 'odd_even';
 
 	public function opposite(): CalendarDayType {
 		return match ($this) {

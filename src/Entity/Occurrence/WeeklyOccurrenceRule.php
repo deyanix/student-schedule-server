@@ -4,12 +4,16 @@ namespace App\Entity\Occurrence;
 
 use App\Entity\Calendar\CalendarDayType;
 use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation as Serializer;
 
 #[ORM\Entity]
 class WeeklyOccurrenceRule extends OccurrenceRule {
 	#[ORM\Column(type: 'smallint')]
+	#[Serializer\Groups(["occurrence_rule:all"])]
 	private int $weekday;
-	#[ORM\Column(type: 'string', enumType: CalendarDayType::class)]
+	#[ORM\Column(type: 'string', enumType: CalendarDayType::class, nullable: true)]
+	#[Serializer\Groups(["occurrence_rule:all"])]
+	#[Serializer\Type("Enum")]
 	private ?CalendarDayType $type;
 
 	/**
