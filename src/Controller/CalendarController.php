@@ -13,7 +13,7 @@ class CalendarController extends AbstractController {
 	) {}
 
     #[Rest\View]
-    #[Rest\Get("/")]
+    #[Rest\Get]
     public function get() {
         return $this->calendarService->getCalendar()
 	        ->toCollection()
